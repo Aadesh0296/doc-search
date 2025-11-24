@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "spring.data.elasticsearch.client.endpoints",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.data.elasticsearch.client.endpoints'"
+  },
+  {
+    "name": "file.storage-dir",
+    "type": "java.lang.String",
+    "description": "A description for 'file.storage-dir'"
+  },
+  {
+    "name": "file.max-size-mb",
+    "type": "java.lang.String",
+    "description": "A description for 'file.max-size-mb'"
+  },
+  {
+    "name": "docsearch.top-keywords",
+    "type": "java.lang.String",
+    "description": "A description for 'docsearch.top-keywords'"
+  }
+]}

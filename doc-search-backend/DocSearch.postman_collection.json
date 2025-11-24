@@ -1,0 +1,95 @@
+{
+  "info": {
+    "name": "DocSearch API",
+    "_postman_id": "aadesh-docsearch-collection",
+    "description": "Upload / Search / Download endpoints for doc-search-backend (localhost)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Environment variables",
+      "item": [],
+      "event": []
+    },
+    {
+      "name": "Upload file",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/files/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","files","upload"]
+        },
+        "description": "multipart/form-data: key = file"
+      },
+      "response": []
+    },
+    {
+      "name": "Search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/search?q={{q}}&page={{page}}&size={{size}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","search"],
+          "query": [
+            { "key": "q", "value": "{{q}}" },
+            { "key": "page", "value": "{{page}}" },
+            { "key": "size", "value": "{{size}}" }
+          ]
+        },
+        "description": "Search query. Set q parameter (e.g., java)."
+      },
+      "response": []
+    },
+    {
+      "name": "Download file",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/files/download/{{filename}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","files","download","{{filename}}"]
+        },
+        "description": "Download by filename from upload response (filename includes id-prefix)."
+      },
+      "response": []
+    },
+    {
+      "name": "List ES indices",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{elasticUrl}}/_cat/indices?v",
+          "host": ["{{elasticUrl}}"],
+          "path": ["_cat","indices"]
+        },
+        "description": "Hit Elasticsearch directly (requires ES running)."
+      },
+      "response": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5001" },
+    { "key": "elasticUrl", "value": "http://localhost:9200" },
+    { "key": "q", "value": "java" },
+    { "key": "page", "value": "0" },
+    { "key": "size", "value": "10" },
+    { "key": "filename", "value": "" }
+  ]
+}
