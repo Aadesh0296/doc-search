@@ -9,9 +9,15 @@ export default function ResultsGrid({ results = [] }) {
       </div>
     );
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    <div
+      className={`grid gap-4 mt-4
+    ${results.length === 1 ? "grid-cols-1 justify-center" : ""}
+    ${results.length === 2 ? "grid-cols-2" : ""}
+    ${results.length >= 3 ? "grid-cols-2" : ""}
+  `}
+    >
       {results.map((r) => (
-        <ResultCard key={r.id} doc={r} />
+        <ResultCard key={r.id} doc={r} className="w-full" />
       ))}
     </div>
   );

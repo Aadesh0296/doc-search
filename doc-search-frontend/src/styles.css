@@ -8,3 +8,20 @@ body {
 a {
     color: #1a73e8;
 }
+
+/* apply subtle highlight style to <mark> generated from server */
+mark {
+    background-color: #ffe58a;
+    /* light yellow */
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* style for <em> if you keep default */
+em {
+    font-style: normal;
+    background-color: rgba(108, 92, 231, 0.12);
+    padding: 0 2px;
+    border-radius: 2px;
+}

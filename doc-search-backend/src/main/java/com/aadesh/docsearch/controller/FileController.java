@@ -1,3 +1,4 @@
+// src/main/java/com/aadesh/docsearch/controller/FileController.java
 package com.aadesh.docsearch.controller;
 
 import com.aadesh.docsearch.model.DocumentEntity;
@@ -20,6 +21,7 @@ public class FileController {
 
     private final IndexService indexService;
     private final DocumentRepository repo;
+
     @Value("${file.storage-dir:./uploaded_files}")
     private String storageDir;
 
@@ -42,20 +44,41 @@ public class FileController {
         }
     }
 
-    @GetMapping("/download/{filename:.+}")
-    public ResponseEntity<Resource> download(@PathVariable String filename) {
+    // Download or inline (preview)
+    @GetMapping({"/download/{filename:.+}", "/preview/{filename:.+}"})
+    public ResponseEntity<Resource> downloadOrPreview(@PathVariable String filename,
+                                                      @RequestParam(value = "inline", defaultValue = "false") boolean inline) {
         try {
             Path file = Paths.get(storageDir).resolve(filename);
             Resource resource = new PathResource(file.toAbsolutePath());
             if (!resource.exists()) return ResponseEntity.notFound().build();
+
+            String ext = filename.contains(".") ? filename.substring(filename.lastIndexOf('.') + 1).toLowerCase() : "";
+            MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            switch (ext) {
+                case "pdf": mediaType = MediaType.APPLICATION_PDF; break;
+                case "txt": mediaType = MediaType.TEXT_PLAIN; break;
+                case "docx": mediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.wordprocessingml.document"); break;
+                case "pptx": mediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.presentationml.presentation"); break;
+                case "png": mediaType = MediaType.IMAGE_PNG; break;
+                case "jpg": case "jpeg": mediaType = MediaType.IMAGE_JPEG; break;
+            }
+
+            ContentDisposition disposition = inline
+                    ? ContentDisposition.inline().filename(resource.getFilename()).build()
+                    : ContentDisposition.attachment().filename(resource.getFilename()).build();
+
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentDisposition(ContentDisposition.builder("attachment").filename(resource.getFilename()).build());
+            headers.setContentDisposition(disposition);
+            headers.setContentType(mediaType);
+
             return ResponseEntity.ok()
                     .headers(headers)
                     .contentLength(resource.contentLength())
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
+
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

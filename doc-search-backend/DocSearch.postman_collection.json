@@ -1,16 +1,21 @@
 {
   "info": {
     "name": "DocSearch API",
-    "_postman_id": "aadesh-docsearch-collection",
-    "description": "Upload / Search / Download endpoints for doc-search-backend (localhost)",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "description": "Postman collection for DocSearch backend (upload, search, suggest, graph). Set {{baseUrl}} to your backend (e.g. http://localhost:5001).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
   },
-  "item": [
+  "variable": [
     {
-      "name": "Environment variables",
-      "item": [],
-      "event": []
+      "key": "baseUrl",
+      "value": "http://localhost:5001"
     },
+    {
+      "key": "exampleFileId",
+      "value": ""
+    }
+  ],
+  "item": [
     {
       "name": "Upload file",
       "request": {
@@ -22,35 +27,22 @@
             {
               "key": "file",
               "type": "file",
-              "src": ""
+              "src": "path/to/your/file.pdf"
             }
           ]
         },
         "url": {
           "raw": "{{baseUrl}}/api/files/upload",
-          "host": ["{{baseUrl}}"],
-          "path": ["api","files","upload"]
-        },
-        "description": "multipart/form-data: key = file"
-      },
-      "response": []
-    },
-    {
-      "name": "Search",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/search?q={{q}}&page={{page}}&size={{size}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["api","search"],
-          "query": [
-            { "key": "q", "value": "{{q}}" },
-            { "key": "page", "value": "{{page}}" },
-            { "key": "size", "value": "{{size}}" }
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "files",
+            "upload"
           ]
         },
-        "description": "Search query. Set q parameter (e.g., java)."
+        "description": "Upload a document (PDF/DOCX/PPTX/TXT). Update the file path in the body before sending."
       },
       "response": []
     },
@@ -60,36 +52,153 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/files/download/{{filename}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["api","files","download","{{filename}}"]
+          "raw": "{{baseUrl}}/api/files/download/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "files",
+            "download",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{exampleFileId}}"
+            }
+          ]
         },
-        "description": "Download by filename from upload response (filename includes id-prefix)."
+        "description": "Download previously uploaded file. Replace :id with real file id or set variable exampleFileId."
       },
       "response": []
     },
     {
-      "name": "List ES indices",
+      "name": "Search (v2) - full text + filters",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{elasticUrl}}/_cat/indices?v",
-          "host": ["{{elasticUrl}}"],
-          "path": ["_cat","indices"]
+          "raw": "{{baseUrl}}/api/search/v2?q={{q}}&page={{page}}&size={{size}}&fileType={{fileType}}&tags={{tags}}&dateFrom={{dateFrom}}&dateTo={{dateTo}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "search",
+            "v2"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "{{q}}"
+            },
+            {
+              "key": "page",
+              "value": "{{page}}"
+            },
+            {
+              "key": "size",
+              "value": "{{size}}"
+            },
+            {
+              "key": "fileType",
+              "value": "{{fileType}}"
+            },
+            {
+              "key": "tags",
+              "value": "{{tags}}"
+            },
+            {
+              "key": "dateFrom",
+              "value": "{{dateFrom}}"
+            },
+            {
+              "key": "dateTo",
+              "value": "{{dateTo}}"
+            }
+          ],
+          "variable": [
+            { "key": "q", "value": "java" },
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "10" },
+            { "key": "fileType", "value": "" },
+            { "key": "tags", "value": "" },
+            { "key": "dateFrom", "value": "" },
+            { "key": "dateTo", "value": "" }
+          ]
         },
-        "description": "Hit Elasticsearch directly (requires ES running)."
+        "description": "Full-text search. Supported query params: q, page, size, fileType, tags (comma separated), dateFrom (ISO), dateTo (ISO)."
+      },
+      "response": []
+    },
+    {
+      "name": "Suggest (autocomplete)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/search/suggest?q={{q}}&limit={{limit}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "search",
+            "suggest"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "{{q}}"
+            },
+            {
+              "key": "limit",
+              "value": "{{limit}}"
+            }
+          ],
+          "variable": [
+            { "key": "q", "value": "jav" },
+            { "key": "limit", "value": "8" }
+          ]
+        },
+        "description": "Typeahead suggestions for query prefixes (returns suggestions array)."
+      },
+      "response": []
+    },
+    {
+      "name": "Graph (keyword ↔ document)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/search/graph?q={{q}}&size={{size}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "search",
+            "graph"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "{{q}}"
+            },
+            {
+              "key": "size",
+              "value": "{{size}}"
+            }
+          ],
+          "variable": [
+            { "key": "q", "value": "java" },
+            { "key": "size", "value": "30" }
+          ]
+        },
+        "description": "Returns a small graph JSON: { nodes: [...], edges: [...] } usable by Cytoscape frontend."
       },
       "response": []
     }
-  ],
-  "event": [],
-  "variable": [
-    { "key": "baseUrl", "value": "http://localhost:5001" },
-    { "key": "elasticUrl", "value": "http://localhost:9200" },
-    { "key": "q", "value": "java" },
-    { "key": "page", "value": "0" },
-    { "key": "size", "value": "10" },
-    { "key": "filename", "value": "" }
   ]
 }
