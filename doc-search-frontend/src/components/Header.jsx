@@ -50,9 +50,9 @@ export default function Header() {
           </a>
 
           <a
-            href="https://www.linkedin.com/in/aadesh0296/"
+            href="https://www.linkedin.com/in/aadeshlawange/"
             target="_blank"
-            className="inline-flex items-center gap-2 bg-[#0077B5] text-white px-4 py-2 rounded-lg transition shadow-sm hover:bg-[#0a66c2]"
+            className="inline-flex items-center gap-2 bg-[#fff] text-white px-4 py-2 rounded-lg transition shadow-sm border-2-[#0a66c2]"
           >
             <Linkedin size={14} /> LinkedIn
           </a>
