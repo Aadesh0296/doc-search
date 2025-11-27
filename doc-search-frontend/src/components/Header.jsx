@@ -27,7 +27,7 @@ export default function Header() {
         {/* NAVIGATION */}
         <nav className="hidden md:flex items-center gap-6">
           <a
-            href="#"
+            href="https://github.com/Aadesh0296/doc-search/blob/main/Readme.md"
             className="text-sm text-gray-600 hover:text-accent transition font-medium"
           >
             Docs
